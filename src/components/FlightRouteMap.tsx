@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Flight } from "@/data/flights";
-import { Plane, MapPin, Maximize2, Navigation, Layers } from "lucide-react";
+import { Plane, MapPin, Navigation, Layers } from "lucide-react";
 
 interface FlightRouteMapProps {
   flight: Flight;
@@ -44,17 +44,15 @@ export function FlightRouteMap({ flight }: FlightRouteMapProps) {
       });
       mapInstanceRef.current = map;
 
-      const cartoKey = process.env.NEXT_PUBLIC_CARTO_API_KEY || "cb1_3xdf_1_00d1998430fda0681b849ecd";
-      const tileUrl = cartoKey
-        ? `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?api_key=${cartoKey}`
-        : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
-
-      // Dark theme map tiles (CartoDB Dark Matter with authenticated API key)
-      L.tileLayer(tileUrl, {
-        maxZoom: 19,
-        subdomains: "abcd",
-        attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap',
-      }).addTo(map);
+      // Dark theme map tiles (CARTO Dark Matter with automatic tile fallback)
+      const tileLayer = L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        {
+          maxZoom: 19,
+          subdomains: "abcd",
+          attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap',
+        }
+      ).addTo(map);
 
       // Custom Origin Marker Icon
       const originIcon = L.divIcon({
@@ -98,7 +96,7 @@ export function FlightRouteMap({ flight }: FlightRouteMapProps) {
         </div>
       `);
 
-      // Generate curved arc points (Great Circle interpolation simulation)
+      // Generate curved arc points (Great Circle interpolation)
       const points: [number, number][] = [];
       const numPoints = 100;
       const progress = (flight.progressPercent || 50) / 100;
@@ -113,7 +111,7 @@ export function FlightRouteMap({ flight }: FlightRouteMapProps) {
       }
 
       // Draw dashed trajectory
-      const polyline = L.polyline(points, {
+      L.polyline(points, {
         color: "#38bdf8",
         weight: 3,
         dashArray: "6, 8",
@@ -187,7 +185,7 @@ export function FlightRouteMap({ flight }: FlightRouteMapProps) {
 
         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900/90 backdrop-blur-md border border-slate-700/80 text-[11px] text-slate-300 pointer-events-auto shadow-md">
           <Layers className="w-3 h-3 text-indigo-400" />
-          <span>Interactive Radar Map</span>
+          <span>CARTO Dark Matter Radar</span>
         </div>
       </div>
 
