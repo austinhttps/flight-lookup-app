@@ -52,7 +52,7 @@ export function Navbar({ apiProvider, onProviderChange }: NavbarProps) {
 
             {/* GitHub Link */}
             <a
-              href="https://github.com"
+              href="https://github.com/austinhttps/flight-lookup-app"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800/60 hover:bg-slate-700/80 border border-slate-700/60 text-slate-300 hover:text-white transition-colors"
