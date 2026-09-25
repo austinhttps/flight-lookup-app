@@ -44,14 +44,17 @@ export function FlightRouteMap({ flight }: FlightRouteMapProps) {
       });
       mapInstanceRef.current = map;
 
-      // Dark theme map tiles (CartoDB Dark Matter)
-      L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-        {
-          maxZoom: 19,
-          subdomains: "abcd",
-        }
-      ).addTo(map);
+      const cartoKey = process.env.NEXT_PUBLIC_CARTO_API_KEY || "cb1_3xdf_1_00d1998430fda0681b849ecd";
+      const tileUrl = cartoKey
+        ? `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?api_key=${cartoKey}`
+        : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+
+      // Dark theme map tiles (CartoDB Dark Matter with authenticated API key)
+      L.tileLayer(tileUrl, {
+        maxZoom: 19,
+        subdomains: "abcd",
+        attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap',
+      }).addTo(map);
 
       // Custom Origin Marker Icon
       const originIcon = L.divIcon({
